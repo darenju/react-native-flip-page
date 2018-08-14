@@ -4,9 +4,13 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import styles from './styles';
 import { rotateX, rotateY, transformOrigin } from './transform-utils';
+import renderVerticalPage from './vertical-page';
+import renderHorizontalPage from './horizontal-page';
 
-export default class FlipPage extends React.Component {
+class FlipPage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -28,11 +32,10 @@ export default class FlipPage extends React.Component {
 
   componentWillMount() {
     this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        const { dx, dy } = gestureState;
+        return Math.abs(dx) >= 1 && Math.abs(dy) >= 1;
+      },
       onPanResponderMove: this.handlePanResponderMove.bind(this),
       onPanResponderRelease: this.handlePanResponderStop.bind(this),
     });
@@ -50,12 +53,12 @@ export default class FlipPage extends React.Component {
     let matrix = orientation === 'vertical' ? rotateX(angle) : rotateY(angle);
     const origin = orientation === 'vertical' ?
       { x: 0, y: halfHeight / 2, z: 0 } :
-      { x: halfWidth / 2, y: 0, z: 0 }
+      { x: halfWidth / 2, y: 0, z: 0 };
     transformOrigin(matrix, origin);
     firstHalf.setNativeProps({
       transform: [
         { matrix },
-        { perspective: '130em' }
+        { perspective: '130em' },
       ],
     });
   }
@@ -72,12 +75,12 @@ export default class FlipPage extends React.Component {
     let matrix = orientation === 'vertical' ? rotateX(angle) : rotateY(angle);
     const origin = orientation === 'vertical' ?
       { x: 0, y: -halfHeight / 2, z: 0 } :
-      { x: -halfWidth / 2, y: 0, z: 0 }
+      { x: -halfWidth / 2, y: 0, z: 0 };
     transformOrigin(matrix, origin);
     secondHalf.setNativeProps({
       transform: [
         { matrix },
-        { perspective: '130em' }
+        { perspective: '130em' },
       ],
     });
   }
@@ -264,118 +267,22 @@ export default class FlipPage extends React.Component {
       marginTop: -halfHeight,
     };
 
-    return (
-      <View
-        style={[styles.page, { zIndex: page === index ? 1 : -1}]}
-        key={`page-${index}`}
-      >
-        {/* Previous & next pages shown underneath the current page */}
-        <View style={styles.page}>
-          <View
-            style={[
-              styles.half,
-              styles.verticalHalf,
-              styles.verticalFirstHalf,
-              styles.under
-            ]}
-          >
-            <View style={height}>
-              {previousPage}
-            </View>
-          </View>
-          <View
-            style={[
-              styles.half,
-              styles.verticalHalf,
-              styles.verticalSecondHalf,
-              styles.under
-            ]}
-          >
-            <View style={secondHalfPull}>
-              {nextPage}
-            </View>
-          </View>
-        </View>
-        {/* Current page */}
-        <View style={styles.page}>
-          <View
-            style={[
-              styles.half,
-              styles.verticalHalf,
-              styles.verticalFirstHalf,
-              { zIndex: direction === 'bottom' ? 4 : 3 }
-            ]}
-            ref={view => this.firstHalves[index] = view}
-          >
-            <View
-              style={[
-                { zIndex: absAngle < 90 || direction !== 'bottom' ? 3 : 2 },
-                height,
-              ]}
-            >
-              {thisPage}
-            </View>
-            <View
-              style={[
-                styles.page,
-                { zIndex: absAngle > 90 && direction === 'bottom' ? 3 : 2}
-              ]}
-              transform={[
-                { rotateZ: '180deg' },
-                { rotateY: '180deg' },
-              ]}
-            >
-              <View style={secondHalfPull}>
-                {previousPage}
-              </View>
-            </View>
-          </View>
-          <View
-            style={[
-              styles.half,
-              styles.verticalHalf,
-              styles.verticalSecondHalf,
-              { zIndex: direction === 'top' ? 4 : 3 }
-            ]}
-            ref={view => this.secondHalves[index] = view}
-          >
-            <View style={styles.shadow} />
-            <View
-              style={[
-                secondHalfPull,
-                { zIndex: absAngle < 90 || direction === 'bottom' ? 3 : 2 },
-              ]}
-            >
-              {thisPage}
-            </View>
-            <View
-              style={[
-                styles.page,
-                { zIndex: absAngle > 90 && direction === 'top' ? 3 : 2 },
-              ]}
-              transform={[
-                { rotateZ: '180deg' },
-                { rotateY: '180deg' },
-              ]}
-            >
-              <View style={height}>
-                {nextPage}
-              </View>
-            </View>
-          </View>
-        </View>
-        <View
-          style={[
-            styles.page,
-            {
-              top: direction !== '' ? '-100%' : 0,
-              overflow: 'hidden',
-            },
-          ]}
-        >
-          {thisPage}
-        </View>
-      </View>
+    const setViewCallback = (view) => this.firstHalves[index] = view;
+    console.log(typeof setViewCallback);
+
+    return renderVerticalPage(
+      absAngle,
+      page,
+      halfHeight,
+      direction,
+      height,
+      secondHalfPull,
+      styles,
+      index,
+      this,
+      previousPage,
+      thisPage,
+      nextPage,
     );
   }
 
@@ -396,160 +303,19 @@ export default class FlipPage extends React.Component {
       marginLeft: -halfWidth,
     };
 
-    return (
-      <View
-        style={[
-          styles.page,
-          { zIndex: page === index ? 1 : -1} // Page should not be visible if not current.
-        ]}
-        key={`page-${index}`}
-      >
-        <View
-          style={[
-            styles.page,
-            { width: direction === 'left' ? '100%' : 0 },
-          ]}
-        >
-          <View
-            style={[
-              styles.half,
-              styles.horizontalHalf,
-              styles.horizontalFirstHalf,
-              styles.under,
-            ]}
-          >
-            <View style={width}>
-              {thisPage}
-            </View>
-          </View>
-          <View
-            style={[
-              styles.half,
-              styles.horizontalHalf,
-              styles.horizontalSecondHalf,
-              styles.under
-            ]}
-          >
-            <View style={secondHalfPull}>
-              {nextPage}
-            </View>
-          </View>
-        </View>
-        <View
-          style={[
-            styles.page,
-            { width: direction === 'right' ? '100%' : 0 },
-          ]}
-        >
-          <View
-            style={[
-              styles.half,
-              styles.horizontalHalf,
-              styles.horizontalFirstHalf,
-              styles.under
-            ]}
-          >
-            <View style={width}>
-              {previousPage}
-            </View>
-          </View>
-          <View
-            style={[
-              styles.half,
-              styles.horizontalHalf,
-              styles.horizontalSecondHalf,
-              styles.under
-            ]}
-          >
-            <View style={secondHalfPull}>
-              {thisPage}
-            </View>
-          </View>
-        </View>
-        {/* Current page */}
-        <View
-          style={styles.page}
-        >
-          {/* Left part */}
-          <View
-            style={[
-              styles.half,
-              styles.horizontalHalf,
-              styles.horizontalFirstHalf,
-              { zIndex: direction === 'right' ? 4 : 3 },
-              { width: direction === 'left' ? 0 : '50%' },
-            ]}
-            ref={view => this.firstHalves[index] = view}
-          >
-            <View
-              style={[
-                { zIndex: absAngle < 90 || direction !== 'right' ? 3 : 2 },
-                width,
-              ]}
-            >
-              {thisPage}
-            </View>
-            <View
-              style={[
-                styles.page,
-                { zIndex: absAngle > 90 && direction === 'right' ? 3 : 2}
-              ]}
-              transform={[
-                { rotateZ: '180deg' },
-                { rotateX: '180deg' },
-              ]}
-            >
-              <View style={secondHalfPull}>
-                {previousPage}
-              </View>
-            </View>
-          </View>
-          {/* Right part */}
-          <View
-            style={[
-              styles.half,
-              styles.horizontalHalf,
-              styles.horizontalSecondHalf,
-              { zIndex: direction === 'left' ? 4 : 3 },
-              { width: direction === 'right' ? 0 : '50%' },
-            ]}
-            ref={view => this.secondHalves[index] = view}
-          >
-            <View
-              style={[
-                secondHalfPull,
-                { zIndex: absAngle < 90 || direction === 'right' ? 3 : 2 },
-              ]}>
-              {thisPage}
-            </View>
-            <View
-              style={[
-                styles.page,
-                { zIndex: absAngle > 90 && direction === 'left' ? 3 : 2 },
-              ]}
-              transform={[
-                { rotateZ: '180deg' },
-                { rotateX: '180deg' },
-              ]}
-            >
-              <View style={width}>
-                {nextPage}
-              </View>
-            </View>
-          </View>
-        </View>
-        <View
-          style={[
-            styles.page,
-            {
-              top: direction !== '' ? '-100%' : 0,
-              overflow: 'hidden',
-            },
-          ]}
-        >
-          {thisPage}
-        </View>
-      </View>
+    return renderHorizontalPage(
+      absAngle,
+      page,
+      halfWidth,
+      direction,
+      width,
+      secondHalfPull,
+      styles,
+      index,
+      this,
+      previousPage,
+      thisPage,
+      nextPage,
     );
   }
 
@@ -583,6 +349,10 @@ export default class FlipPage extends React.Component {
   }
 };
 
+FlipPage.propTypes = {
+  orientation: PropTypes.oneOf(['horizontal', 'vertical']),
+};
+
 FlipPage.defaultProps = {
   orientation: 'vertical',
 };
@@ -603,10 +373,6 @@ class FlipPagePage extends React.PureComponent {
       </View>
     )
   }
-};
-
-export {
-  FlipPagePage
 };
 
 const styles = StyleSheet.create({
@@ -650,3 +416,8 @@ const styles = StyleSheet.create({
     left: '50%',
   },
 });
+
+export {
+  FlipPage as default,
+  FlipPagePage
+};
