@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import { rotateX, transformOrigin } from '../transform-utils';
+import { rotateX, transformOrigin } from './transform-utils';
 
 export default class FlipPage extends React.Component {
   constructor(props) {
