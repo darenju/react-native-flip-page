@@ -1,0 +1,18 @@
+{
+  "name": "react-native-flip-page",
+  "version": "0.1.0",
+  "description": "A React Native component imitating the Flipboard® page flip behaviour",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Julien Fradin",
+    "email": "julien@frad.in"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">= 16.x",
+    "react-native": ">= 0.56.x"
+  }
+}
