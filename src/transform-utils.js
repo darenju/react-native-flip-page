@@ -12,6 +12,18 @@ const rotateX = (deg) => {
   ];
 };
 
+const rotateY = (deg) => {
+  const rad = (Math.PI / 180) * deg;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  return [
+    cos, 0, sin, 0,
+    0, 1, 0, 0,
+    -sin, 0, cos, 0,
+    0, 0, 0, 1,
+  ];
+};
+
 const transformOrigin = (matrix, origin) => {
   const { x, y, z } = origin;
 
@@ -26,5 +38,6 @@ const transformOrigin = (matrix, origin) => {
 
 export {
   rotateX,
+  rotateY,
   transformOrigin,
 };
