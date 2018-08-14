@@ -97,7 +97,7 @@ export default (
           { zIndex: direction === 'right' ? 4 : 3 },
           { width: direction === 'left' ? 0 : '50%' },
         ]}
-        ref={view => this.firstHalves[index] = view}
+        ref={view => that.firstHalves[index] = view}
       >
         <View
           style={[
@@ -131,7 +131,7 @@ export default (
           { zIndex: direction === 'left' ? 4 : 3 },
           { width: direction === 'right' ? 0 : '50%' },
         ]}
-        ref={view => this.secondHalves[index] = view}
+        ref={view => that.secondHalves[index] = view}
       >
         <View
           style={[
