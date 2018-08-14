@@ -1,6 +1,6 @@
 {
   "name": "react-native-flip-page",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A React Native component imitating the Flipboard® page flip behaviour",
   "main": "src/index.js",
   "scripts": {
