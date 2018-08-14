@@ -126,5 +126,3 @@ export default (absAngle,
     </View>
   </View>
 );
-
-export default renderVerticalPage;
