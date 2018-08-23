@@ -58,7 +58,7 @@ class FlipPage extends React.Component {
     firstHalf.setNativeProps({
       transform: [
         { matrix },
-        { perspective: '130em' },
+        { perspective: 100000 },
       ],
     });
   }
@@ -80,7 +80,7 @@ class FlipPage extends React.Component {
     secondHalf.setNativeProps({
       transform: [
         { matrix },
-        { perspective: '130em' },
+        { perspective: 100000 },
       ],
     });
   }
@@ -109,7 +109,7 @@ class FlipPage extends React.Component {
 
     this.setState({ direction: nextDirection });
 
-    if (dn < 0 && (nextDirection === 'top' || nextDirection === 'left')) {
+    if (dn < 0 && (nextDirection === 'top' || nextDirection === 'left')) {
       if (page === this.props.children.length - 1) {
         angle = Math.max(angle, -30);
       }
@@ -208,9 +208,9 @@ class FlipPage extends React.Component {
       ) {
         clearInterval(this.resetTimer);
 
-        if (direction === 'top' || direction === 'left' || direction === '') {
+        if (direction === 'top' || direction === 'left' || direction === '') {
           this.rotateSecondHalf(targetAngle);
-        } else if (direction === 'bottom' || direction === 'right' || direction === '') {
+        } else if (direction === 'bottom' || direction === 'right' || direction === '') {
           this.rotateFirstHalf(targetAngle);
         }
 
@@ -235,7 +235,7 @@ class FlipPage extends React.Component {
 
     this.setState({
       shouldGoNext: absAngle > 90 && (direction === 'top' || direction === 'left'),
-      shouldGoPrevious: absAngle > 90 && (direction === 'bottom' || direction === 'right'),
+      shouldGoPrevious: absAngle > 90 && (direction === 'bottom' || direction === 'right'),
     }, this.resetHalves);
   }
 
