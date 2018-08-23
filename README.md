@@ -6,6 +6,8 @@
 
 This package allows you to use the cool Flipboard page swipe effect in your React Native apps.
 
+![Demo GIF](https://raw.githubusercontent.com/darenju/react-native-flip-page/master/demo.gif)
+
 ## Install
 
 Installation is pretty straight-forward, as you just have to `npm install` this package:
@@ -20,7 +22,7 @@ Then, use the module by importing in in your app code.
 
 This package consists of two components. Simply throw a `FlipPage` component with some `FlipPagePage` children that will be the content.
 
-```html
+```
 <FlipPage>
   <FlipPagePage>
     <Text>Page 1</Text>
