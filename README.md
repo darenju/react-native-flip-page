@@ -42,7 +42,8 @@ There are a few properties that define the behaviour of the component, here they
 
 | Prop | Type | Default | Role |
 |------|------|---------|------|
-| `orientation` | `string` | `vertical` | Orientation of swipes. `vertical` or `horizontal` for respectively up/down swipes and left/right swipes |
+| `loopForever` | `bool` | `false` | Indicates if the component should go back to the first page when reaching last page, and go back to last page after reaching first page. |
+| `orientation` | `string` | `vertical` | Orientation of swipes. `vertical` or `horizontal` for respectively up/down swipes and left/right swipes. |
 
 ## Contribute
 

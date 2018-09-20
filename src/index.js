@@ -41,6 +41,18 @@ class FlipPage extends React.Component {
     });
   }
 
+  lastPage() {
+    return this.props.children.length - 1;
+  }
+
+  isOnFirstPage() {
+    return this.state.page === 0;
+  }
+
+  isOnLastPage() {
+    return this.state.page === this.lastPage();
+  }
+
   rotateFirstHalf(angle) {
     const {
       halfHeight,
@@ -87,8 +99,8 @@ class FlipPage extends React.Component {
 
   handlePanResponderMove(e, gestureState) {
     const { dx, dy } = gestureState;
-    const { page, direction } = this.state;
-    const { orientation } = this.props;
+    const { direction } = this.state;
+    const { orientation, loopForever } = this.props;
     const dn = orientation === 'vertical' ? dy : dx;
 
     let angle = (dn / 250) * 180;
@@ -110,7 +122,7 @@ class FlipPage extends React.Component {
     this.setState({ direction: nextDirection });
 
     if (dn < 0 && (nextDirection === 'top' || nextDirection === 'left')) {
-      if (page === this.props.children.length - 1) {
+      if (this.isOnLastPage() && !loopForever) {
         angle = Math.max(angle, -30);
       }
 
@@ -120,7 +132,7 @@ class FlipPage extends React.Component {
         angle,
       });
     } else if (dn > 0 && (nextDirection === 'bottom' || nextDirection === 'right')) {
-      if (page === 0) {
+      if (this.isOnFirstPage() && !loopForever) {
         angle = Math.min(angle, 30);
       }
       this.rotateFirstHalf(angle);
@@ -132,6 +144,8 @@ class FlipPage extends React.Component {
   }
 
   resetHalves() {
+    const { loopForever, children } = this.props;
+    const pages = children.length;
     const {
       angle,
       direction,
@@ -149,7 +163,7 @@ class FlipPage extends React.Component {
       if (shouldGoNext) {
         this.setState({
           angle: 0,
-          page: page + 1,
+          page: loopForever && this.isOnLastPage() ? 0 : page + 1,
         }, () => {
           firstHalf.setNativeProps({ transform: [] });
           secondHalf.setNativeProps({ transform: [] });
@@ -157,7 +171,7 @@ class FlipPage extends React.Component {
       } else if (shouldGoPrevious) {
         this.setState({
           angle: 0,
-          page: page - 1,
+          page: loopForever && this.isOnFirstPage() ? pages - 1 : page - 1,
         }, () => {
           firstHalf.setNativeProps({ transform: [] });
           secondHalf.setNativeProps({ transform: [] });
@@ -268,7 +282,6 @@ class FlipPage extends React.Component {
     };
 
     const setViewCallback = (view) => this.firstHalves[index] = view;
-    console.log(typeof setViewCallback);
 
     return renderVerticalPage(
       absAngle,
@@ -321,11 +334,12 @@ class FlipPage extends React.Component {
 
   renderPage(component, index) {
     const { halfWidth } = this.state;
-    const { children, orientation } = this.props;
+    const { children, orientation, loopForever } = this.props;
+    const pages = children.length;
 
     const thisPage = component;
-    const nextPage = children[index + 1];
-    const previousPage = index > 0 ? children[index - 1] : null;
+    const nextPage = index + 1 < pages ? children[index + 1] : (loopForever ? children[0] : null);
+    const previousPage = index > 0 ? children[index - 1] : (loopForever ? children[pages - 1] : null);
 
     if (orientation === 'vertical') {
       return this.renderVerticalPage(previousPage, thisPage, nextPage, index);
@@ -351,10 +365,12 @@ class FlipPage extends React.Component {
 
 FlipPage.propTypes = {
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),
+  loopForever: PropTypes.bool,
 };
 
 FlipPage.defaultProps = {
   orientation: 'vertical',
+  loopForever: false,
 };
 
 class FlipPagePage extends React.PureComponent {
