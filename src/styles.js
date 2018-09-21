@@ -40,4 +40,12 @@ export default StyleSheet.create({
   horizontalSecondHalf: {
     left: '50%',
   },
+  shadow: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    height: '100%',
+    left: 0,
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+  },
 });

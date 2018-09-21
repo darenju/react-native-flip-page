@@ -32,6 +32,10 @@ export default (
         <View style={height}>
           {previousPage}
         </View>
+        <View style={[
+          styles.shadow,
+          { opacity: (180 - absAngle) / 180 }
+        ]} />
       </View>
       <View
         style={[
@@ -42,8 +46,12 @@ export default (
         ]}
       >
         <View style={secondHalfPull}>
-          {nextPage}
+           {nextPage}
         </View>
+        <View style={[
+          styles.shadow,
+          { opacity: (180 - absAngle) / 180 }
+        ]} />
       </View>
     </View>
     {/* Current page */}
