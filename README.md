@@ -44,6 +44,7 @@ There are a few properties that define the behaviour of the component, here they
 |------|------|---------|------|
 | `loopForever` | `bool` | `false` | Indicates if the component should go back to the first page when reaching last page, and go back to last page after reaching first page. |
 | `orientation` | `string` | `vertical` | Orientation of swipes. `vertical` or `horizontal` for respectively up/down swipes and left/right swipes. |
+| `onFinish(orientation)` | `function` | `null` | Function called after the swipe is finished. Only usable if `loopForever` is `false`. |
 
 ## Contribute
 
