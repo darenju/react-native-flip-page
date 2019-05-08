@@ -18,6 +18,7 @@ class FlipPage extends React.Component {
       angle: 0,
       page: 0,
       halfHeight: 0,
+      halfWidth: 0,
       shouldGoNext: false,
       shouldGoPrevious: false,
       direction: '',
@@ -158,8 +159,10 @@ class FlipPage extends React.Component {
     const secondHalf = this.secondHalves[page];
 
     const finish = () => {
+      const { onFinish } = this.props;
+      const { direction } = this.state;
       this.setState({ direction: '' });
-
+      
       if (shouldGoNext) {
         this.setState({
           angle: 0,
@@ -176,6 +179,10 @@ class FlipPage extends React.Component {
           firstHalf.setNativeProps({ transform: [] });
           secondHalf.setNativeProps({ transform: [] });
         });
+      } else {
+        if (typeof onFinish === 'function') {
+          onFinish(direction);
+        }
       }
     };
 
@@ -366,11 +373,13 @@ class FlipPage extends React.Component {
 FlipPage.propTypes = {
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),
   loopForever: PropTypes.bool,
+  onFinish: PropTypes.func,
 };
 
 FlipPage.defaultProps = {
   orientation: 'vertical',
   loopForever: false,
+  onFinish: null,
 };
 
 class FlipPagePage extends React.PureComponent {
