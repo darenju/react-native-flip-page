@@ -162,7 +162,7 @@ class FlipPage extends React.Component {
       const { onFinish } = this.props;
       const { direction } = this.state;
       this.setState({ direction: '' });
-      
+
       if (shouldGoNext) {
         this.setState({
           angle: 0,
@@ -357,14 +357,16 @@ class FlipPage extends React.Component {
 
   render() {
     const { children } = this.props;
-
+    const { page } = this.state;
+    const from = page > 0 ? page - 1 : 0;
+    const to = from + 3;
     return (
       <View
         style={styles.container}
         {...this.panResponder.panHandlers}
         onLayout={this.onLayout}
       >
-        {children.map(this.renderPage)}
+        {children.slice(from, to).map((component, index) => this.renderPage(component, from + index))}
       </View>
     );
   }
