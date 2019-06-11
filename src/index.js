@@ -340,7 +340,6 @@ class FlipPage extends React.Component {
   }
 
   renderPage(component, index) {
-    const { halfWidth } = this.state;
     const { children, orientation, loopForever } = this.props;
     const pages = children.length;
 
@@ -357,7 +356,7 @@ class FlipPage extends React.Component {
 
   render() {
     const { children } = this.props;
-    const { page } = this.state;
+    const { page, halfWidth, halfHeight } = this.state;
     const from = page > 0 ? page - 1 : 0;
     const to = from + 3;
     return (
@@ -366,7 +365,7 @@ class FlipPage extends React.Component {
         {...this.panResponder.panHandlers}
         onLayout={this.onLayout}
       >
-        {children.slice(from, to).map((component, index) => this.renderPage(component, from + index))}
+        {!!halfWidth && !!halfHeight && children.slice(from, to).map((component, index) => this.renderPage(component, from + index))}
       </View>
     );
   }
