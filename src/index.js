@@ -189,6 +189,7 @@ class FlipPage extends React.Component {
           angle: 0,
           page: loopForever && this.isOnLastPage() ? 0 : page + 1,
         }, () => {
+          this.props.onPageChange(this.state.page, 'next')
           firstHalf.setNativeProps({ transform: [] });
           secondHalf.setNativeProps({ transform: [] });
         });
@@ -197,6 +198,7 @@ class FlipPage extends React.Component {
           angle: 0,
           page: loopForever && this.isOnFirstPage() ? pages - 1 : page - 1,
         }, () => {
+          this.props.onPageChange(this.state.page, 'prev')
           firstHalf.setNativeProps({ transform: [] });
           secondHalf.setNativeProps({ transform: [] });
         });
