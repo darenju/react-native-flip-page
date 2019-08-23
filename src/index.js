@@ -119,6 +119,24 @@ class FlipPage extends React.Component {
       } else if (dn > 0 && direction === '') {
         nextDirection = orientation === 'vertical' ? 'top' : 'left';
       }
+      this.setState({ direction: nextDirection });
+      if (dn < 0 && (nextDirection === 'bottom' || nextDirection === 'right')) {
+        if (this.isOnLastPage() && !loopForever) {
+          angle = Math.max(angle, -30);
+        }
+        this.rotateSecondHalf(angle);
+        this.setState({
+          angle,
+        });
+      } else if (dn > 0 && (nextDirection === 'top' || nextDirection === 'left')) {
+        if (this.isOnFirstPage() && !loopForever) {
+          angle = Math.min(angle, 30);
+        }
+        this.rotateFirstHalf(angle);
+        this.setState({
+          angle,
+        });
+      }
     }
     else {
       if (dn < 0 && direction === '') {
@@ -126,29 +144,24 @@ class FlipPage extends React.Component {
       } else if (dn > 0 && direction === '') {
         nextDirection = orientation === 'vertical' ? 'bottom' : 'right';
       }
-    }
-
-    this.setState({ direction: nextDirection });
-
-    if (dn < 0 && (nextDirection === 'top' || nextDirection === 'left')) {
-      if (this.isOnLastPage() && !loopForever) {
-        angle = Math.max(angle, -30);
+      this.setState({ direction: nextDirection });
+      if (dn < 0 && (nextDirection === 'top' || nextDirection === 'left')) {
+        if (this.isOnLastPage() && !loopForever) {
+          angle = Math.max(angle, -30);
+        }
+        this.rotateSecondHalf(angle);
+        this.setState({
+          angle,
+        });
+      } else if (dn > 0 && (nextDirection === 'bottom' || nextDirection === 'right')) {
+        if (this.isOnFirstPage() && !loopForever) {
+          angle = Math.min(angle, 30);
+        }
+        this.rotateFirstHalf(angle);
+        this.setState({
+          angle,
+        });
       }
-
-      this.rotateSecondHalf(angle);
-
-      this.setState({
-        angle,
-      });
-    } else if (dn > 0 && (nextDirection === 'bottom' || nextDirection === 'right')) {
-      if (this.isOnFirstPage() && !loopForever) {
-        angle = Math.min(angle, 30);
-      }
-      this.rotateFirstHalf(angle);
-
-      this.setState({
-        angle,
-      });
     }
   }
 
