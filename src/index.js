@@ -101,7 +101,7 @@ class FlipPage extends React.Component {
   handlePanResponderMove(e, gestureState) {
     const { dx, dy } = gestureState;
     const { direction } = this.state;
-    const { orientation, loopForever } = this.props;
+    const { orientation, loopForever, reverse } = this.props;
     const dn = orientation === 'vertical' ? dy : dx;
 
     let angle = (dn / 250) * 180;
@@ -113,11 +113,19 @@ class FlipPage extends React.Component {
     }
 
     let nextDirection = direction;
-
-    if (dn < 0 && direction === '') {
-      nextDirection = orientation === 'vertical' ? 'top' : 'left';
-    } else if (dn > 0 && direction === '') {
-      nextDirection = orientation === 'vertical' ? 'bottom' : 'right';
+    if (reverse) {
+      if (dn < 0 && direction === '') {
+        nextDirection = orientation === 'vertical' ? 'bottom' : 'right';
+      } else if (dn > 0 && direction === '') {
+        nextDirection = orientation === 'vertical' ? 'top' : 'left';
+      }
+    }
+    else {
+      if (dn < 0 && direction === '') {
+        nextDirection = orientation === 'vertical' ? 'top' : 'left';
+      } else if (dn > 0 && direction === '') {
+        nextDirection = orientation === 'vertical' ? 'bottom' : 'right';
+      }
     }
 
     this.setState({ direction: nextDirection });
@@ -375,12 +383,16 @@ FlipPage.propTypes = {
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),
   loopForever: PropTypes.bool,
   onFinish: PropTypes.func,
+  onPageChange: PropTypes.func,
+  reverse: PropTypes.bool,
 };
 
 FlipPage.defaultProps = {
   orientation: 'vertical',
   loopForever: false,
   onFinish: null,
+  onPageChange: () => {},
+  reverse: false,
 };
 
 class FlipPagePage extends React.PureComponent {
